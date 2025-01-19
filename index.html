@@ -28,19 +28,22 @@
             background-color: rgba(255, 255, 255, 0); /* Transparent */
             z-index: 10;
         }
+
+        /* Désactivation de la sélection de texte */
+        .no-select {
+            user-select: none; /* Empêche la sélection de texte */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
     </style>
     <script>
-        // Empêcher le changement d'onglet et de fenêtre
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
-                alert("Vous devez rester sur cette page pour continuer à remplir le formulaire.");
-                window.focus();  // Restaure le focus sur la fenêtre
-            }
-        });
-
-        // Désactiver le clic droit et les raccourcis dans l'iframe
+        // Désactiver la sélection de texte et le clic droit
         document.addEventListener("DOMContentLoaded", function() {
             var overlay = document.querySelector('.overlay');
+            
+            // Désactiver la sélection de texte
+            document.body.classList.add('no-select');
 
             // Désactiver le clic droit sur l'iframe
             overlay.addEventListener("contextmenu", function(event) {
@@ -48,11 +51,12 @@
                 alert("Le clic droit est désactivé.");
             });
 
-            // Désactiver certains raccourcis clavier
+            // Désactiver certains raccourcis clavier (comme Ctrl+C et Cmd+C)
             overlay.addEventListener("keydown", function(event) {
-                if (event.ctrlKey || event.altKey || event.key === "Tab") {
+                if (event.ctrlKey && (event.key === 'c' || event.key === 'C') || 
+                    event.metaKey && (event.key === 'c' || event.key === 'C')) {
                     event.preventDefault();
-                    alert("Les raccourcis clavier sont désactivés.");
+                    alert("La copie est désactivée.");
                 }
             });
 
@@ -61,6 +65,14 @@
                 alert("Vous ne pouvez pas changer d'onglet pendant le remplissage du formulaire.");
                 window.focus();
             };
+        });
+
+        // Empêcher le changement d'onglet ou de fenêtre
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                alert("Vous devez rester sur cette page pour continuer à remplir le formulaire.");
+                window.focus();  // Restaure le focus sur la fenêtre
+            }
         });
     </script>
 </head>
