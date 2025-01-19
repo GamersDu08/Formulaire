@@ -12,7 +12,7 @@
             border: none;
         }
 
-        /* Superposition pour intercepter les actions sur l'iframe */
+        /* Superposition invisible qui masque les questions */
         .iframe-container {
             position: relative;
             width: 100%;
@@ -27,53 +27,42 @@
             height: 100%;
             background-color: rgba(255, 255, 255, 0); /* Transparent */
             z-index: 10;
+            pointer-events: none; /* L'overlay ne bloquera pas l'interaction avec l'iframe */
         }
 
-        /* Désactivation de la sélection de texte */
-        .no-select {
-            user-select: none; /* Empêche la sélection de texte */
-            -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
+        /* Appliquer le masque pour empêcher la sélection */
+        iframe {
+            pointer-events: none; /* Désactive la sélection dans l'iframe */
         }
     </style>
     <script>
         // Désactiver la sélection de texte et le clic droit
         document.addEventListener("DOMContentLoaded", function() {
-            var overlay = document.querySelector('.overlay');
-            
-            // Désactiver la sélection de texte
-            document.body.classList.add('no-select');
+            var iframe = document.querySelector('iframe');
 
-            // Désactiver le clic droit sur l'iframe
-            overlay.addEventListener("contextmenu", function(event) {
-                event.preventDefault();
-                alert("Le clic droit est désactivé.");
-            });
+            // Créer un masque invisible qui couvre les questions
+            var overlay = document.createElement('div');
+            overlay.style.position = 'absolute';
+            overlay.style.top = '0';
+            overlay.style.left = '0';
+            overlay.style.width = '100%';
+            overlay.style.height = '100%';
+            overlay.style.backgroundColor = 'rgba(255, 255, 255, 0)';
+            overlay.style.zIndex = '999';
+            overlay.style.pointerEvents = 'none'; // Permet à l'utilisateur d'interagir avec le formulaire sans restrictions
 
-            // Désactiver certains raccourcis clavier (comme Ctrl+C et Cmd+C)
-            overlay.addEventListener("keydown", function(event) {
-                if (event.ctrlKey && (event.key === 'c' || event.key === 'C') || 
-                    event.metaKey && (event.key === 'c' || event.key === 'C')) {
-                    event.preventDefault();
-                    alert("La copie est désactivée.");
-                }
-            });
+            // Ajouter le masque dans l'iframe
+            iframe.parentElement.appendChild(overlay);
 
-            // Bloquer le changement d'onglet
-            window.onblur = function() {
-                alert("Vous ne pouvez pas changer d'onglet pendant le remplissage du formulaire.");
-                window.focus();
-            };
+            // Désactiver la sélection de texte sur toute la page
+            document.body.style.userSelect = 'none';
         });
 
-        // Empêcher le changement d'onglet ou de fenêtre
-        document.addEventListener("visibilitychange", () => {
-            if (document.hidden) {
-                alert("Vous devez rester sur cette page pour continuer à remplir le formulaire.");
-                window.focus();  // Restaure le focus sur la fenêtre
-            }
-        });
+        // Bloquer le changement d'onglet
+        window.onblur = function() {
+            alert("Vous ne pouvez pas changer d'onglet pendant le remplissage du formulaire.");
+            window.focus();
+        };
     </script>
 </head>
 <body>
@@ -81,7 +70,6 @@
     <div class="iframe-container">
         <!-- Votre lien Google Form -->
         <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdrnoMF5VisrGe-77eoqyIfvotBTR6JIo5q2WkAfg1PRkoJ4g/viewform" allowfullscreen></iframe>
-        <div class="overlay"></div> <!-- Zone d'interception pour le clic droit et les raccourcis -->
     </div>
 </body>
 </html>
