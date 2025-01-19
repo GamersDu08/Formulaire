@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire Sécurisé</title>
+    <script>
+        // Détecte si l'utilisateur change d'onglet ou de fenêtre
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                alert("Vous devez rester sur cette page pour continuer à remplir le formulaire.");
+            }
+        });
+
+        // Désactive le clic droit (optionnel)
+        document.addEventListener("contextmenu", (event) => {
+            event.preventDefault();
+            alert("Le clic droit est désactivé.");
+        });
+
+        // Désactive les raccourcis clavier comme Alt+Tab ou Ctrl+T
+        document.addEventListener("keydown", (event) => {
+            if (event.ctrlKey || event.altKey || event.key === "Tab") {
+                event.preventDefault();
+                alert("Les raccourcis clavier sont désactivés.");
+            }
+        });
+    </script>
+    <style>
+        /* Style pour centrer et ajuster le formulaire */
+        iframe {
+            width: 100%;
+            height: 100vh;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Formulaire Sécurisé</h1>
+    <!-- Remplacez l'URL ci-dessous par le lien de votre Google Form -->
+    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSdrnoMF5VisrGe-77eoqyIfvotBTR6JIo5q2WkAfg1PRkoJ4g/viewform" allowfullscreen></iframe>
+</body>
+</html>
