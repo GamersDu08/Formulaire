@@ -30,9 +30,16 @@
         }
     </style>
     <script>
-        // Désactiver le clic droit et les raccourcis dans la zone iframe
+        // Empêcher le changement d'onglet et de fenêtre
+        document.addEventListener("visibilitychange", () => {
+            if (document.hidden) {
+                alert("Vous devez rester sur cette page pour continuer à remplir le formulaire.");
+                window.focus();  // Restaure le focus sur la fenêtre
+            }
+        });
+
+        // Désactiver le clic droit et les raccourcis dans l'iframe
         document.addEventListener("DOMContentLoaded", function() {
-            var iframe = document.querySelector('iframe');
             var overlay = document.querySelector('.overlay');
 
             // Désactiver le clic droit sur l'iframe
@@ -49,12 +56,11 @@
                 }
             });
 
-            // Détecter si l'utilisateur quitte la fenêtre
-            document.addEventListener("visibilitychange", () => {
-                if (document.hidden) {
-                    alert("Vous devez rester sur cette page pour continuer à remplir le formulaire.");
-                }
-            });
+            // Bloquer le changement d'onglet
+            window.onblur = function() {
+                alert("Vous ne pouvez pas changer d'onglet pendant le remplissage du formulaire.");
+                window.focus();
+            };
         });
     </script>
 </head>
